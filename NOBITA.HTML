@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+  <title>NOBITA AI - 3D Animated Landing</title>
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="NOBITA.css">
+  <style>
+    :root {
+      --primary: #ffe066; /* Soft yellow */
+      --secondary: #ffd60a; /* Bright yellow */
+      --accent: #fffbe6;    /* Lightest yellow */
+      --glass-bg: rgba(255, 255, 200, 0.13);
+      --glass-border: rgba(255, 255, 200, 0.22);
+      --shadow: 0 8px 32px 0 rgba(255, 220, 80, 0.25);
+      --gradient: linear-gradient(120deg, #181818 0%, #232323 60%, #3a2d00 100%);
+      --text-dark: #ffe066;
+      --text-light: #fffbe6;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Epilogue', sans-serif;
+      background: var(--gradient);
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--text-dark);
+    }
+    /* Galaxy 3D background effect */
+    .galaxy-bg {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      z-index: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse at 50% 60%, #232323 0%, #181818 80%, #3a2d00 100%);
+      perspective: 1200px;
+    }
+    .star {
+      --size: calc(2px + 2.5vw * (var(--i) / 20));
+      --blur: calc(1px + 2vw * (var(--i) / 20));
+      --color: hsl(52, 100%, calc(70% - 1.5% * var(--i)));
+      position: absolute;
+      left: calc(100vw * (var(--i) / 20));
+      top: calc(100vh * (var(--i) / 20));
+      width: var(--size);
+      height: var(--size);
+      border-radius: 50%;
+      background: var(--color);
+      filter: blur(var(--blur));
+      opacity: 0.7;
+      transform: translateZ(calc(-800px + 80px * var(--i))) scale(1.2);
+      animation: flyStar 8s linear infinite;
+      animation-delay: calc(-0.4s * var(--i));
+    }
+    @keyframes flyStar {
+      0% {
+        opacity: 0.5;
+        transform: translateZ(calc(-800px + 80px * var(--i))) scale(1.2) rotateY(0deg);
+      }
+      70% {
+        opacity: 1;
+        filter: blur(0.5vw);
+      }
+      100% {
+        opacity: 0;
+        transform: translateZ(600px) scale(2.5) rotateY(360deg);
+        filter: blur(0px);
+      }
+    }
+    .hero-3d {
+      perspective: 1200px;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-card {
+      background: var(--glass-bg);
+      border: 1.5px solid var(--glass-border);
+      box-shadow: var(--shadow);
+      border-radius: 2rem;
+      padding: 3rem 2.5rem;
+      max-width: 700px;
+      width: 90vw;
+      text-align: center;
+      backdrop-filter: blur(12px);
+      transform-style: preserve-3d;
+      transition: transform 0.5s cubic-bezier(.25,.8,.25,1), box-shadow 0.5s;
+      will-change: transform;
+      animation: floatY 4s ease-in-out infinite alternate;
+    }
+    .hero-card:hover {
+      transform: rotateY(8deg) scale(1.03);
+      box-shadow: 0 16px 48px 0 rgba(255, 220, 80, 0.35);
+    }
+    @keyframes floatY {
+      0% { transform: translateY(0) rotateY(-4deg);}
+      100% { transform: translateY(-18px) rotateY(4deg);}
+    }
+    .hero-img-3d {
+      width: 180px;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 50%;
+      box-shadow: 0 8px 32px 0 rgba(255, 220, 80, 0.18);
+      margin-bottom: 1.5rem;
+      border: 4px solid var(--accent);
+      background: #fffbe6;
+      transform: rotateY(-10deg) scale(1.05);
+      transition: transform 0.4s;
+    }
+    .hero-card:hover .hero-img-3d {
+      transform: rotateY(10deg) scale(1.12);
+    }
+    .hero-title {
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 2px;
+      margin-bottom: 1rem;
+      text-shadow: 0 2px 8px #0008;
+    }
+    .hero-desc {
+      font-size: 1.25rem;
+      color: var(--text-dark);
+      margin-bottom: 2rem;
+      font-weight: 400;
+      text-shadow: 0 1px 4px #0006;
+    }
+    .btn-3d {
+      background: var(--secondary);
+      color: var(--text-light);
+      border: none;
+      border-radius: 2rem;
+      padding: 0.75rem 2.5rem;
+      font-size: 1.2rem;
+      font-weight: 700;
+      box-shadow: 0 4px 16px 0 rgba(255, 220, 80, 0.18);
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      outline: none;
+      margin: 0 0.5rem;
+    }
+    .btn-3d:hover, .btn-3d:focus {
+      background: var(--primary);
+      color: #232323;
+      transform: translateY(-4px) scale(1.04);
+      box-shadow: 0 8px 32px 0 rgba(255, 220, 80, 0.25);
+    }
+    .features-3d {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      margin: 4rem 0 2rem 0;
+    }
+    .feature-card {
+      background: var(--glass-bg);
+      border: 1.5px solid var(--glass-border);
+      border-radius: 1.5rem;
+      box-shadow: var(--shadow);
+      padding: 2rem 1.5rem;
+      width: 320px;
+      min-height: 260px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      backdrop-filter: blur(8px);
+      transform-style: preserve-3d;
+      transition: transform 0.4s, box-shadow 0.4s;
+      will-change: transform;
+      animation: floatCard 6s ease-in-out infinite alternate;
+    }
+    .feature-card:hover {
+      transform: rotateY(8deg) scale(1.04);
+      box-shadow: 0 12px 36px 0 rgba(255, 220, 80, 0.18);
+    }
+    @keyframes floatCard {
+      0% { transform: translateY(0) rotateY(-2deg);}
+      100% { transform: translateY(-10px) rotateY(2deg);}
+    }
+    .feature-icon {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      text-shadow: 0 2px 8px #0008;
+    }
+    .feature-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+    .feature-desc {
+      font-size: 1.05rem;
+      color: var(--text-dark);
+      text-align: center;
+      font-weight: 400;
+    }
+    .footer-glass {
+      background: var(--glass-bg);
+      border-top: 1.5px solid var(--glass-border);
+      box-shadow: 0 -4px 32px 0 rgba(255, 220, 80, 0.12);
+      padding: 2rem 0 1rem 0;
+      text-align: center;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      backdrop-filter: blur(8px);
+      margin-top: 3rem;
+      position: relative;
+      z-index: 2;
+    }
+    .made-by {
+      text-align: center;
+      font-size: 1.2rem;
+      font-family: 'Epilogue', sans-serif;
+      letter-spacing: 1.5px;
+      margin: 2rem 0 0.5rem 0;
+      color: #ffd60a;
+      text-shadow: 0 2px 8px #0008;
+      font-weight: 700;
+      position: relative;
+      z-index: 3;
+    }
+    .made-by .bi-heart-fill {
+      color: #e63946;
+      vertical-align: middle;
+      margin: 0 0.2em;
+      font-size: 1.1em;
+      animation: pulse 1.2s infinite;
+    }
+    .made-by .ayush {
+      background: linear-gradient(90deg, #ffd60a 0%, #ffb700 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-fill-color: transparent;
+      font-weight: 900;
+      letter-spacing: 2px;
+      transition: background 0.3s;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1);}
+      50% { transform: scale(1.2);}
+    }
+    @media (max-width: 900px) {
+      .hero-card { padding: 2rem 1rem; }
+      .features-3d { gap: 1rem; }
+      .feature-card { width: 95vw; min-width: 220px; }
+    }
+    @media (max-width: 600px) {
+      .hero-title { font-size: 2rem; }
+      .hero-card { padding: 1.2rem 0.5rem; }
+      .features-3d { flex-direction: column; gap: 1.2rem; }
+      .feature-card { width: 98vw; min-width: 180px; }
+      .hero-img-3d { width: 120px; height: 120px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Galaxy Star Background -->
+  <div class="galaxy-bg">
+    <div class="star" style="--i:1"></div>
+    <div class="star" style="--i:2"></div>
+    <div class="star" style="--i:3"></div>
+    <div class="star" style="--i:4"></div>
+    <div class="star" style="--i:5"></div>
+    <div class="star" style="--i:6"></div>
+    <div class="star" style="--i:7"></div>
+    <div class="star" style="--i:8"></div>
+    <div class="star" style="--i:9"></div>
+    <div class="star" style="--i:10"></div>
+    <div class="star" style="--i:11"></div>
+    <div class="star" style="--i:12"></div>
+    <div class="star" style="--i:13"></div>
+    <div class="star" style="--i:14"></div>
+    <div class="star" style="--i:15"></div>
+    <div class="star" style="--i:16"></div>
+    <div class="star" style="--i:17"></div>
+    <div class="star" style="--i:18"></div>
+    <div class="star" style="--i:19"></div>
+    <div class="star" style="--i:20"></div>
+  </div>
+
+  <!-- 3D Hero Section -->
+  <div class="hero-3d">
+    <div class="hero-card">
+      <img src="NOBITA.png.webp" alt="NOBITA AI" class="hero-img-3d">
+      <div class="hero-title">NOBITA AI</div>
+      <div class="hero-desc">
+        Unleash the Power of Voice with Our AI Assistant.<br>
+        Experience hands-free interaction and command your world!
+      </div>
+      <a class="btn-3d" href="doraAI.html">
+        <i class="bi bi-robot"></i> Try Now
+      </a>
+    </div>
+  </div>
+
+  <!-- 3D Features Section -->
+  <div class="features-3d">
+    <div class="feature-card">
+      <div class="feature-icon"><i class="bi bi-lightbulb"></i></div>
+      <div class="feature-title">Smart</div>
+      <div class="feature-desc">Intelligent and intuitive, NOBITA AI understands and adapts to your commands.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><i class="bi bi-lightning-charge"></i></div>
+      <div class="feature-title">Fast</div>
+      <div class="feature-desc">Lightning-fast execution of tasks, making voice interaction seamless and efficient.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><i class="bi bi-person-bounding-box"></i></div>
+      <div class="feature-title">Adaptive</div>
+      <div class="feature-desc">Learns from your usage to provide a personalized experience.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><i class="bi bi-gear"></i></div>
+      <div class="feature-title">Versatile</div>
+      <div class="feature-desc">Handles a wide range of tasks and commands, from simple to complex.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><i class="bi bi-shield-lock"></i></div>
+      <div class="feature-title">Secure</div>
+      <div class="feature-desc">Robust security measures to protect your voice data and ensure privacy.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon"><i class="bi bi-chat-dots"></i></div>
+      <div class="feature-title">Interactive</div>
+      <div class="feature-desc">Engage in natural, interactive conversations for a more human-like experience.</div>
+    </div>
+  </div>
+
+  <!-- 3D About Section -->
+  <div class="hero-3d" style="margin-top:2rem;">
+    <div class="hero-card" style="max-width:900px;">
+      <div class="hero-title" style="font-size:2rem;">About NOBITA AI</div>
+      <div class="hero-desc" style="font-size:1.1rem;">
+        Welcome to the future of voice technology, where your every command is our delight.<br>
+        At NOBITA AI, we've harnessed the power of AI to bring you a voice assistant that's smarter, faster, and more intuitive than ever before.<br><br>
+        Our AI assistant is designed to understand your needs, anticipate your desires, and execute your commands with lightning speed.<br>
+        Say goodbye to mundane tasks and hello to a world of seamless voice interaction.<br><br>
+        Join the revolution and experience the magic of NOBITA AI.<br>
+        It's time to speak and watch things happen!
+      </div>
+    </div>
+  </div>
+
+  <!-- Stylish Made By Line -->
+  <div class="made-by">
+    Made with <i class="bi bi-heart-fill"></i> by <span class="ayush">Ayush Bajpai</span>
+  </div>
+
+  <!-- 3D Footer -->
+  <div class="footer-glass">
+    © 2025 NOBITA AI. All rights reserved.
+  </div>
+
+  <!-- Bootstrap JS and Icons -->
+  <script
